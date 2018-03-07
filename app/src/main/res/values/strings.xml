@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Fresh: The Food App</string>
+    <string name="title_activity_print_label">PrintLabelActivity</string>
+</resources>
