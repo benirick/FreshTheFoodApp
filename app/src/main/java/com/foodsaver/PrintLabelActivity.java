@@ -13,7 +13,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +24,12 @@ import java.util.ArrayList;
 public class PrintLabelActivity extends AppCompatActivity {
 
     AdapterView.OnItemSelectedListener foodChange;
+    CompoundButton.OnCheckedChangeListener switchChange;
+
     Spinner spinner1; // first selected ingredient
     Spinner spinner2; // second selected ingredient
+    Switch swRawOrCooked;
+    Switch swFridgeOrFreezer;
     TextView textIngredientList; // turn our selected ingredients into text to view on the screen
 
     @Override
@@ -35,6 +41,8 @@ public class PrintLabelActivity extends AppCompatActivity {
 
         spinner1 = findViewById(R.id.spinner_select_ingredient1);
         spinner2 = findViewById(R.id.spinner_select_ingredient2);
+        swRawOrCooked = findViewById(R.id.swRawOrCooked);
+        swFridgeOrFreezer = findViewById(R.id.swFridgeOrFreezer);
 
         textIngredientList = findViewById(R.id.textIngredientList);
 
@@ -62,6 +70,17 @@ public class PrintLabelActivity extends AppCompatActivity {
             }
         };
 
+        // this block defined what we do when the user changes fridge/freezer or raw/cooked
+        switchChange = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                setIngredientList();
+            }
+        };
+
+        swRawOrCooked.setOnCheckedChangeListener(switchChange);
+        swFridgeOrFreezer.setOnCheckedChangeListener(switchChange);
+
         spinner1.setOnItemSelectedListener(foodChange);
         spinner2.setOnItemSelectedListener(foodChange);
     }
@@ -69,7 +88,9 @@ public class PrintLabelActivity extends AppCompatActivity {
     // when the user changes an ingredient, we need to change the textList that shows what the
     // label will look like
     private void setIngredientList() {
-        textIngredientList.setText(Food.getPrintableText(this, getIngredients()));
+        int rawOrCooked = getRawOrCooked();
+        int fridgeOrFreezer = getFridgeOrFreezer();
+        textIngredientList.setText(Food.getPrintableText(this, getIngredients(), rawOrCooked, fridgeOrFreezer));
     }
 
     // look at our ingredient spinners and return an ArrayList of Strings with our selected ingredients.
@@ -87,15 +108,33 @@ public class PrintLabelActivity extends AppCompatActivity {
         doEscPosPrint();
     }
 
+    private int getFridgeOrFreezer() {
+        if (swFridgeOrFreezer.isChecked())
+            return Food.STORE_FREEZER;
+        else
+            return Food.STORE_FRIDGE;
+    }
+
+    private int getRawOrCooked() {
+        if (swRawOrCooked.isChecked())
+            return Food.COOKED;
+        else
+            return Food.RAW;
+    }
+
     private void doEscPosPrint() {
         String textToPrint = "<BIG>Text Title<BR>Testing <BIG>BIG<BR><BIG><BOLD>" +
                 "string <SMALL> text<BR><LEFT>Left aligned<BR><CENTER>" +
                 "Center aligned<BR><UNDERLINE>underline text<BR><QR>12345678<BR>" +
                 "<CENTER>QR: 12345678<BR>Line<BR><LINE><BR>Double Line<BR><DLINE><BR><CUT>";
 
-        textToPrint = Food.getEscPosText(this, getIngredients());
+        int rawOrCooked = getRawOrCooked();
+        int fridgeOrFreezer = getFridgeOrFreezer();
 
-        // the pe.deigoveleper.printing is how we talk to the esc/pos printer driver that must
+
+        textToPrint = Food.getEscPosText(this, getIngredients(), rawOrCooked, fridgeOrFreezer);
+
+        // the pe.diegoveleper.printing is how we talk to the esc/pos printer driver that must
         // be installed on the Android device.
         // https://play.google.com/store/apps/details?id=pe.diegoveloper.printerserverapp&hl=en
 

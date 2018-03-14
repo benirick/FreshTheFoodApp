@@ -58,20 +58,44 @@
     </RelativeLayout>
 
 
-
-
     <TextView
         android:id="@+id/textIngredientList"
         android:layout_width="match_parent"
         android:layout_height="116dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="179dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:ems="10"
         android:lines="3"
         android:maxLines="3"
         android:singleLine="false"
         android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="105dp"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/textView6"
+        android:layout_alignTop="@+id/textView4"
+        android:text="Refrigerator"
+        android:textAlignment="viewEnd" />
+
+    <Switch
+        android:id="@+id/swFridgeOrFreezer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:checked="false"
+        android:splitTrack="false"
+        tools:checked="true" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/swRawOrCooked"
+        android:layout_alignStart="@+id/buttonPrint"
+        android:text="Raw" />
 
     <Button
         android:id="@+id/buttonPrint"
@@ -79,7 +103,38 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="139dp"
+        android:layout_marginBottom="69dp"
         android:onClick="printLabel"
         android:text="Print Label" />
+
+    <Switch
+        android:id="@+id/swRawOrCooked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:checked="true"
+        android:splitTrack="false"
+        tools:checked="true" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/swRawOrCooked"
+        android:layout_alignStart="@+id/textView4"
+        android:text="Cooked"
+        android:textAlignment="viewEnd" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="115dp"
+        android:layout_marginTop="121dp"
+        android:text="Freezer" />
+
 </RelativeLayout>
