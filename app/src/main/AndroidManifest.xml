@@ -24,5 +24,6 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ViewFoodsActivity"
             android:screenOrientation="portrait" />
+        <receiver android:name="com.foodsaver.FoodNotificationManager" />
     </application>
 </manifest>

@@ -1,6 +1,7 @@
 package com.foodsaver;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -141,6 +142,19 @@ public class Food {
         }
 
         return result;
+    }
+
+    public static int getExpireDaysFromIngredients(Activity activity, ArrayList ingredients, int rawOrCooked, int fridgeOrFreezer) {
+        int minExpireDays = NO_EXPIRATION_DATE;
+        int curExpireDays = NO_EXPIRATION_DATE;
+
+        for (int i=0; i < ingredients.size(); i++) {
+            curExpireDays = getExpireDaysForFood(activity, (String) ingredients.get(i), rawOrCooked, fridgeOrFreezer);
+            if (curExpireDays < minExpireDays)
+                minExpireDays = curExpireDays;
+        }
+
+        return minExpireDays;
     }
 
     // this method will return a string that can be printed, with the lines separated by a newline (\n)

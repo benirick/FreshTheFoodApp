@@ -1,5 +1,6 @@
 package com.foodsaver;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.print.PrintAttributes;
@@ -19,7 +20,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class PrintLabelActivity extends AppCompatActivity {
 
@@ -31,6 +36,9 @@ public class PrintLabelActivity extends AppCompatActivity {
     Switch swRawOrCooked;
     Switch swFridgeOrFreezer;
     TextView textIngredientList; // turn our selected ingredients into text to view on the screen
+    StoredFood food = null; // the result of the "save to database"
+
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +47,12 @@ public class PrintLabelActivity extends AppCompatActivity {
         // this activity will use the layout defined in res/laout/activity_print_label.xml
         setContentView(R.layout.activity_print_label);
 
-        spinner1 = findViewById(R.id.spinner_select_ingredient1);
-        spinner2 = findViewById(R.id.spinner_select_ingredient2);
-        swRawOrCooked = findViewById(R.id.swRawOrCooked);
-        swFridgeOrFreezer = findViewById(R.id.swFridgeOrFreezer);
+        spinner1 = (Spinner) findViewById(R.id.spinner_select_ingredient1);
+        spinner2 = (Spinner) findViewById(R.id.spinner_select_ingredient2);
+        swRawOrCooked = (Switch) findViewById(R.id.swRawOrCooked);
+        swFridgeOrFreezer = (Switch) findViewById(R.id.swFridgeOrFreezer);
 
-        textIngredientList = findViewById(R.id.textIngredientList);
+        textIngredientList = (TextView) findViewById(R.id.textIngredientList);
 
         // this is the new spinner with labels for the foods
         CustomFoodAdapter spinnerFoodsAdapter = new CustomFoodAdapter(getApplicationContext(), Food.getFoodNames(this));
@@ -83,6 +91,8 @@ public class PrintLabelActivity extends AppCompatActivity {
 
         spinner1.setOnItemSelectedListener(foodChange);
         spinner2.setOnItemSelectedListener(foodChange);
+
+        db = new DatabaseHelper(this);
     }
 
     // when the user changes an ingredient, we need to change the textList that shows what the
@@ -106,6 +116,44 @@ public class PrintLabelActivity extends AppCompatActivity {
     // what we do when the user clicks "Print Label"
     public void printLabel(View v) {
         doEscPosPrint();
+        writeToDatabase();
+    }
+
+    public void saveItem(View v) {
+        writeToDatabase();
+    }
+
+    public void cancelItem(View v) {
+        if (food != null)
+            FoodNotificationManager.cancelNotification(this, food);
+    }
+
+    private void writeToDatabase() {
+        // inserting note in db and getting
+        // newly inserted note id
+        String ingredient1;
+        String ingredient2;
+        boolean fridgeOrFreezer = (getFridgeOrFreezer() > 0);
+        boolean rawOrCooked = (getRawOrCooked() > 0);
+        int expireDays;
+        String expirationDate;
+        Date dtCurDate = Calendar.getInstance().getTime();
+
+        ArrayList ingredients = getIngredients();
+        ingredient1 = (String) ingredients.get(0);
+        ingredient2 = (String) ingredients.get(1);
+
+        expireDays = Food.getExpireDaysFromIngredients(this, ingredients, getRawOrCooked(), getFridgeOrFreezer());
+
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(dtCurDate);
+        cal.add(Calendar.DATE, expireDays);
+        Date dtExpireDate = cal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+
+        food = db.insertStoredFood(ingredient1, ingredient2, fridgeOrFreezer, rawOrCooked, sdf.format(dtExpireDate));
+
+        FoodNotificationManager.scheduleNotification(this, food, 5000);
     }
 
     private int getFridgeOrFreezer() {
