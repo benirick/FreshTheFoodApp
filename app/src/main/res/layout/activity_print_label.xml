@@ -81,12 +81,11 @@
 
     <Switch
         android:id="@+id/swFridgeOrFreezer"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/textView4"
         android:layout_centerHorizontal="true"
         android:checked="false"
-        android:splitTrack="false"
         tools:checked="true" />
 
     <TextView
@@ -94,7 +93,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/swRawOrCooked"
-        android:layout_alignStart="@+id/buttonPrint"
+        android:layout_toLeftOf="@+id/swRawOrCooked"
+        android:layout_marginEnd="10dp"
         android:text="Raw" />
 
     <Button
@@ -109,7 +109,7 @@
 
     <Switch
         android:id="@+id/swRawOrCooked"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -129,12 +129,14 @@
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="115dp"
+        android:layout_marginEnd="95dp"
         android:layout_marginTop="121dp"
+        android:layout_marginStart="10dp"
+        android:layout_toRightOf="@+id/swFridgeOrFreezer"
         android:text="Freezer" />
 
     <Button
@@ -142,10 +144,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/textView5"
         android:layout_marginBottom="13dp"
+        android:layout_centerHorizontal="true"
         android:onClick="saveItem"
-        android:text="Save" />
+        android:text="Store Without Printing" />
 
     <Button
         android:id="@+id/buttonCancel"
@@ -155,6 +157,7 @@
         android:layout_alignTop="@+id/buttonSave"
         android:layout_marginEnd="62dp"
         android:onClick="cancelItem"
+        android:visibility="invisible"
         android:text="Cancel" />
 
 </RelativeLayout>
